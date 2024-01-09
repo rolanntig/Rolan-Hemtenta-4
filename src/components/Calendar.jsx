@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
 const Calendar = () => {
   const [bookings, setBookings] = useState([]);
-  const [availableSlots, setAvailableSlots] = useState([]);
+    const [availableSlots, setAvailableSlots] = useState([]);
+    const [dates, setDates] = useState();
+    
+    const navigate = useNavigate();
 
   useEffect(() => {
     axios.get("/bookings").then((response) => setBookings(response.data));
@@ -31,12 +35,13 @@ const Calendar = () => {
       "16:00-17:00",
     ];
     const slots = allSlots.filter((slot) => !bookedSlots.includes(slot));
-    setAvailableSlots(slots);
+      setAvailableSlots(slots);
+      setDates(date);
     console.log(`Clicked on: ${date}`);
   };
 
-  const handleSlotClick = (slot) => {
-    
+    const handleSlotClick = (slot, date) => {
+        navigate("/booking/finalize", { state: { slot: slot, date:dates  } }, {withCredentials: true});
   };
 
   return (

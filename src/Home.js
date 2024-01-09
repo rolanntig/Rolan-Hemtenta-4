@@ -22,7 +22,6 @@ const Home = () => {
       </div>
       <div className="Weather"></div>
           <div className="Qr"></div>
-          <Calendar />
       </div>
       
   );
