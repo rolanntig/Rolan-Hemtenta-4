@@ -4,14 +4,14 @@ import Calendar from './components/Calendar'
 
 const Home = () => {
 
-    useEffect( () => {
-        axios.get("https://api.openweathermap.org/data/2.5/weather?q=huddinge&appid=05abf85529bfdb321b2ca9f97f52d0b8")
-            .then(res => {
-            
-            
-        })
-        
-    },[])
+  const [nextAppointment, setNextAppointment] = useState([]);
+  
+  useEffect(() => {
+        axios
+          .get("/admin/next/meeting")
+          .then((response) => setNextAppointment(response.data));
+  },[])
+
 
   return (
     <div className="App">
@@ -20,8 +20,25 @@ const Home = () => {
         <h1>Biträdande Rektor</h1>
         <h1>kontakt</h1>
       </div>
-      <div className="Weather"></div>
+        <div className="next">
+        <h1>Next Appointment</h1>
+        <div className="next-appointment">
+          {nextAppointment.length != [] ? (
+            nextAppointment.map((appointment) => {
+              return (
+                <div className="appointment" key={appointment.name}>
+                  <p>Bonds nästa möte är kl {appointment.time}</p>
+                </div>
+              );
+            })
+          ) : (
+            <div>
+              <h1>Bond har inga möten just nu</h1>
+            </div>
+          )}
+          </div>
           <div className="Qr"></div>
+      </div>
       </div>
       
   );

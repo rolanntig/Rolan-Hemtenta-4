@@ -2,18 +2,21 @@ import React, { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
 
 const Calendar = () => {
   const [bookings, setBookings] = useState([]);
-    const [availableSlots, setAvailableSlots] = useState([]);
-    const [dates, setDates] = useState();
-    
-    const navigate = useNavigate();
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [dates, setDates] = useState();
+  const [times, setTimes] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get("/bookings").then((response) => setBookings(response.data));
+    axios.get("/active").then((response) => setTimes(response.data));
   }, []);
 
   const handleDateClick = (arg) => {
@@ -25,23 +28,23 @@ const Calendar = () => {
     const bookedSlots = bookings
       .filter((booking) => booking.date === date)
       .map((booking) => booking.time);
-    const allSlots = [
-      "09:00-10:00",
-      "10:00-11:00",
-      "11:00-12:00",
-      "12:00-13:00",
-      "13:00-14:00",
-      "15:00-16:00",
-      "16:00-17:00",
-    ];
-    const slots = allSlots.filter((slot) => !bookedSlots.includes(slot));
-      setAvailableSlots(slots);
-      setDates(date);
+
+    // Filter times based on 'active' status and availability
+    const slots = times
+      .filter((time) => time.active && !bookedSlots.includes(time.time))
+      .map((time) => time.time);
+    
+    setAvailableSlots(slots);
+    setDates(date);
     console.log(`Clicked on: ${date}`);
   };
 
-    const handleSlotClick = (slot, date) => {
-        navigate("/booking/finalize", { state: { slot: slot, date:dates  } }, {withCredentials: true});
+  const handleSlotClick = (slot, date) => {
+    navigate(
+      "/booking/finalize",
+      { state: { slot: slot, date: dates } },
+      { withCredentials: true }
+    );
   };
 
   return (
@@ -67,3 +70,4 @@ const Calendar = () => {
 };
 
 export default Calendar;
+
