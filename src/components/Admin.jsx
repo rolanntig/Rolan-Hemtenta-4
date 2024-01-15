@@ -77,79 +77,102 @@ axios.get("/admin/meeting/today")
   };
 
   return (
-    <div className="dashboard">
-      <div className="next">
-        <h1>Next Appointment</h1>
-        <div className="next-appointment">
-          {nextAppointment.length != [] ? (
-            nextAppointment.map((appointment) => {
-              return (
-                <div className="appointment" key={appointment.name}>
-                  <p>{appointment.name}</p>
-                  <p>{appointment.last_name}</p>
-                  <p>{appointment.email}</p>
-                  <p>{appointment.phone}</p>
-                  <p>{appointment.date}</p>
-                  <p>{appointment.time}</p>
-                </div>
-              );
-            })
-          ) : (
-            <div>
-              <h1>No appointments</h1>
-            </div>
-          )}
+    <div className="flex flex-wrap flex-col">
+      <div className="flex w-full">
+        <div className=" basis-1/2 m-4 p-1 shadow-xl">
+          <h1>Next Appointment</h1>
+          <div className="">
+            {nextAppointment.length != [] ? (
+              nextAppointment.map((appointment) => {
+                return (
+                  <div className="appointment" key={appointment.name}>
+                    <p>{appointment.name}</p>
+                    <p>{appointment.last_name}</p>
+                    <p>{appointment.email}</p>
+                    <p>{appointment.phone}</p>
+                    <p>{appointment.date}</p>
+                    <p>{appointment.time}</p>
+                  </div>
+                );
+              })
+            ) : (
+              <div>
+                <h1>No appointments</h1>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className=" basis-1/2 m-4 p-1 shadow-xl">
+          <h1>Active Times</h1>
+          <div className="flex flex-wrap p-4">
+            {meetingTimes.length != [] ? (
+              meetingTimes.map((time) => {
+                return (
+                  <div className="time" key={time.time}>
+                    <button
+                      className={`py-2 px-4 rounded focus:outline-none transition-colors ${
+                        time.active != 1
+                          ? "bg-gray-500 text-gray-100 hover:bg-gray-700"
+                          : "bg-blue-500 text-white hover:bg-blue-700"
+                      }`}
+                      onClick={handleTimeClick}
+                      value={time.time}
+                    >
+                      {time.time}
+                    </button>
+                  </div>
+                );
+              })
+            ) : (
+              <div>
+                <p>No times</p>
+              </div>
+            )}
+          </div>
+          <div className="flex justify-center p-4">
+            <button
+              onClick={handleButtonClick}
+              className="bg-blue-500 py-2 px-4 text-white rounded"
+            >
+              Add Time
+            </button>
+            {showTimePicker && (
+              <form onSubmit={handleSubmit}>
+                <label htmlFor="fromTime">From Time:</label>
+                <input
+                  type="time"
+                  id="fromTime"
+                  className="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
+                  value={fromTime}
+                  onChange={(e) => setFromTime(e.target.value)}
+                />
+                <br />
+                <label htmlFor="toTime">To Time:</label>
+                <input
+                  type="time"
+                  id="toTime"
+                  className="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
+                  value={toTime}
+                  onChange={(e) => setToTime(e.target.value)}
+                />
+                <br />
+                <button
+                  type="submit"
+                  className="bg-blue-500 py-2 px-4 text-white rounded"
+                >
+                  Submit
+                </button>
+              </form>
+            )}
+          </div>
         </div>
       </div>
-      <div className="times">
-        <h1>Active Times</h1>
-        <div className="times-list">
-          {meetingTimes.length != [] ? (
-            meetingTimes.map((time) => {
-              return (
-                <div className="time" key={time.time}>
-                  <button onClick={handleTimeClick} value={time.time}>
-                    {time.time}
-                  </button>
-                </div>
-              );
-            })
-          ) : (
-            <div>
-              <p>No times</p>
-            </div>
-          )}
-        </div>
-        <div className="Add-Time">
-          <button onClick={handleButtonClick}>Add Time</button>
-          {showTimePicker && (
-            <form onSubmit={handleSubmit}>
-              <label htmlFor="fromTime">From Time:</label>
-              <input
-                type="time"
-                id="fromTime"
-                value={fromTime}
-                onChange={(e) => setFromTime(e.target.value)}
-              />
-              <br />
-              <label htmlFor="toTime">To Time:</label>
-              <input
-                type="time"
-                id="toTime"
-                value={toTime}
-                onChange={(e) => setToTime(e.target.value)}
-              />
-              <br />
-              <button type="submit">Submit</button>
-            </form>
-          )}
-        </div>
-      </div>
-      <div className="schedule">
+      <div className=" basis-1/1">
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
           initialView="timeGridDay"
           events={events}
+          className="max-w-xs mx-auto"
           slotLabelFormat={{
             hour: "2-digit",
             minute: "2-digit",
@@ -169,9 +192,6 @@ axios.get("/admin/meeting/today")
             day: "numeric",
           }}
         />
-      </div>
-      <div className="buttons">
-        
       </div>
     </div>
   );

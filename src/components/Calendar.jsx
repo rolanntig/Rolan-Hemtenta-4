@@ -49,12 +49,14 @@ const Calendar = () => {
 
   return (
     <div>
-      <FullCalendar
-        plugins={[dayGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        weekends={false}
-        dateClick={handleDateClick}
-      />
+      <div>
+        <FullCalendar
+          plugins={[dayGridPlugin, interactionPlugin]}
+          initialView="dayGridMonth"
+          weekends={false}
+          dateClick={handleDateClick}
+        />
+      </div>
       <div>
         Available slots:
         <div>
